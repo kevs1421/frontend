@@ -1,0 +1,8 @@
+.message__alert span i {
+    font-size: 4rem;
+    color: goldenrod;
+}
+.message__alert h1{
+    font-size: 3.6rem;
+    font-family: var(--subtitle-font-name);
+}
