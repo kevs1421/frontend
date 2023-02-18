@@ -19,7 +19,7 @@ const TourDetails = () => {
     const [tourRating, setTourRating] = useState(null);
     const {user} = useContext(AuthContext)
 
-    const { data: tour, loading, error} = useFetch(`${BASE_URL}/tours/${id}`);
+    const { data: tour, loading, error} = useFetch(`${BASE_URL}/tours/${id}`)
 
     const {photo, title, desc, price, address, reviews, city, distance, maxGroupSize} = tour;
     const {totalRating, avgRating} = calculateAvgRating(reviews);
@@ -29,7 +29,7 @@ const TourDetails = () => {
         const reviewText = reviewMsgRef.current.value;
         try {
             if(!user || user === undefined ||user === null){
-                alert('Plase Sign In')
+                alert('Please Sign In')
             }
             const reviewObj = {
                 username: user ?.username,
@@ -44,7 +44,7 @@ const TourDetails = () => {
             });
             const result = await res.json();
             if(!res.ok) {
-                alert(result.message)
+                return alert(result.message)
             };
             alert(result.message)
          
@@ -110,7 +110,7 @@ const TourDetails = () => {
                                         <div className="d-flex align-items-center justify-content-between">
                                             <div>
                                                 <h5>{review.username}</h5>
-                                                <p>{new Date('02-14-2023').toLocaleDateString("en-US", options)}</p>
+                                                <p>{new Date(review.createdAt).toLocaleDateString("en-US", options)}</p>
                                             </div>
                                             <span className="d-flex align-items-center">
                                                 {review.rating} <i className="ri-star-s-line"></i>

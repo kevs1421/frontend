@@ -1,20 +1,44 @@
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
 import { Form, FormGroup, ListGroup, ListGroupItem, Button } from 'reactstrap';
 import { useNavigate } from "react-router-dom";
 import './booking.css';
+import { AuthContext } from "../../context/AuthContext";
+import { BASE_URL } from "../../utils/config";
 
 const Booking = ({tour, avgRating}) => {
 
-    const {price, reviews} = tour
+    const {price, reviews, title} = tour
     const navigate = useNavigate()
-    const [credentials, setCredentials] = useState({useId: '01', userEmail: 'example@gmail.com', fullname: '', phone: '', guestSize: 1, bookAt: ''});
-    const handleChange = e => {setCredentials(prev => ({...prev, [e.target.id]:e.target.value}))};
+    const {user} = useContext(AuthContext)
+    const [booking, setBooking] = useState({useId: user && user._id, userEmail: user && user.email, tourName: title, fullname: '', phone: '', guestSize: 1, bookAt: ''});
+    const handleChange = e => {setBooking(prev => ({...prev, [e.target.id]:e.target.value}))};
 
     const serviceFee = 250
-    const totalAmount = Number(price) * Number(credentials.guestSize) + Number(serviceFee)
+    const totalAmount = Number(price) * Number(booking.guestSize) + Number(serviceFee)
     
-    const handleClick = e => {
-        e.preventDefault()
+    const handleClick = async e => {
+        e.preventDefault();
+        console.log(booking)
+        try {
+            if(!user || user === undefined || user === null){
+                return alert('Please Sign In')
+            }
+            const res = await fetch(`${BASE_URL}/booking`, {
+                method: 'post',
+                headers: {
+                    'content-type':'application/json'
+                },
+                credentials: 'include',
+                body:JSON.stringify(booking)
+            })
+            const result = await res.json()
+            if(!res.ok){
+                return alert(result.message)
+            }
+            navigate("/message");
+        } catch (err) {
+            alert(err.message);
+        }
         navigate("/message");
     }
 
